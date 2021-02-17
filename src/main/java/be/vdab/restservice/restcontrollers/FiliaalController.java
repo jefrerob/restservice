@@ -3,6 +3,7 @@ package be.vdab.restservice.restcontrollers;
 import be.vdab.restservice.domain.Filiaal;
 import be.vdab.restservice.exceptions.FiliaalNietGevondenException;
 import be.vdab.restservice.services.FiliaalService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.EntityLinks;
@@ -31,6 +32,7 @@ public class FiliaalController {
     }
 
     @GetMapping
+    @Operation(summary = "Alle filialen zoeken")
     CollectionModel<EntityModel<FiliaalIdNaam>> findAll() {
         return CollectionModel.of(
                 filiaalService.findAll().stream()
@@ -42,6 +44,7 @@ public class FiliaalController {
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Een filiaal zoeken op id")
     EntityModel<Filiaal> get(@PathVariable long id) {
         return filiaalService.findById(id)
                 .map(filiaal -> EntityModel.of(filiaal,
@@ -52,22 +55,30 @@ public class FiliaalController {
     }
 
     @DeleteMapping("{id}")
+    @Operation(summary = "Een filiaal verwijderen")
     void delete(@PathVariable long id) {
         filiaalService.delete(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    HttpHeaders create(@RequestBody @Valid Filiaal filiaal) {   filiaalService.create(filiaal);
+    @Operation(summary = "Een filiaal toevoegen")
+    HttpHeaders create(@RequestBody @Valid Filiaal filiaal) {
+        filiaalService.create(filiaal);
         var headers = new HttpHeaders();
         headers.setLocation(links.linkToItemResource(filiaal).toUri());
         return headers;
     }
 
     @PutMapping("{id}")
+    @Operation(summary = "Een filiaal wijzigen")
     void put(@RequestBody @Valid Filiaal filiaal) {
         filiaalService.update(filiaal);
     }
+
+
+
+
 
 
 
